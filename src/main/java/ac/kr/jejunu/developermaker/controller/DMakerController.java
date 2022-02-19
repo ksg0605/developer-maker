@@ -1,16 +1,15 @@
 package ac.kr.jejunu.developermaker.controller;
 
 import ac.kr.jejunu.developermaker.dto.CreateDeveloper;
+import ac.kr.jejunu.developermaker.dto.DeveloperDetailDto;
+import ac.kr.jejunu.developermaker.dto.DeveloperDto;
+import ac.kr.jejunu.developermaker.dto.EditDeveloper;
 import ac.kr.jejunu.developermaker.service.DMakerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,12 +31,21 @@ public class DMakerController {
     private final DMakerService dMakerService;
 
     @GetMapping("/developers")
-    public List<String> getAllDevelopers() {
+    public List<DeveloperDto> getAllDevelopers() {
         //GET /developers HTTP/1.1
         log.info("GET /developers HTTP/1.1");
 
-        return Arrays.asList("snow", "Elsa", "Olaf");
+        return dMakerService.getAllDevelopers();
     }
+
+    @GetMapping("/developer/{memberId}")
+    public DeveloperDetailDto getDeveloperDetail(@PathVariable String memberId) {
+        //GET /developers HTTP/1.1
+        log.info("GET /developers HTTP/1.1");
+
+        return dMakerService.getDeveloperDetail(memberId);
+    }
+
 
     @PostMapping("/create-developer")
     public CreateDeveloper.Response createDevelopers(@Valid @RequestBody CreateDeveloper.Request request) {
@@ -45,4 +53,13 @@ public class DMakerController {
 
         return dMakerService.createDeveloper(request);
     }
+
+    @PutMapping("/developer/{memberId}")
+    public DeveloperDetailDto editDeveloper(@PathVariable String memberId, @Valid @RequestBody EditDeveloper.Request request) {
+        //GET /developers HTTP/1.1
+        log.info("GET /developers HTTP/1.1");
+
+        return dMakerService.editDeveloper(memberId);
+    }
+
 }
