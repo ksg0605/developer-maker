@@ -1,12 +1,15 @@
 package ac.kr.jejunu.developermaker.service;
 
+import ac.kr.jejunu.developermaker.code.StatusCode;
 import ac.kr.jejunu.developermaker.dto.CreateDeveloper;
 import ac.kr.jejunu.developermaker.dto.DeveloperDetailDto;
 import ac.kr.jejunu.developermaker.dto.DeveloperDto;
 import ac.kr.jejunu.developermaker.dto.EditDeveloper;
 import ac.kr.jejunu.developermaker.entity.Developer;
+import ac.kr.jejunu.developermaker.entity.RetiredDeveloper;
 import ac.kr.jejunu.developermaker.exception.DMakerException;
 import ac.kr.jejunu.developermaker.repository.DeveloperRepository;
+import ac.kr.jejunu.developermaker.repository.RetiredDeveloperRepository;
 import ac.kr.jejunu.developermaker.type.DeveloperLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,7 @@ import static ac.kr.jejunu.developermaker.exception.DMakerErrorCode.*;
 @RequiredArgsConstructor
 public class DMakerService {
     private final DeveloperRepository developerRepository;
+    private final RetiredDeveloperRepository retiredDeveloperRepository;
 
     @Transactional
     public CreateDeveloper.Response createDeveloper(CreateDeveloper.@Valid Request request) {
@@ -43,6 +47,7 @@ public class DMakerService {
                 .developerSkillType(request.getDeveloperSkillType())
                 .experienceYears(request.getExperienceYears())
                 .memberId(request.getMemberId())
+                .statusCode(StatusCode.EMPLIYED)
                 .name(request.getName())
                 .age(request.getAge())
                 .build();
@@ -74,8 +79,8 @@ public class DMakerService {
         }
     }
 
-    public List<DeveloperDto> getAllDevelopers() {
-        return developerRepository.findAll()
+    public List<DeveloperDto> getAllEmployedDevelopers() {
+        return developerRepository.findDevelopersByStatusCodeEquals(StatusCode.EMPLIYED)
                 .stream().map(DeveloperDto::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -106,4 +111,20 @@ public class DMakerService {
 
     }
 
+    @Transactional
+    public DeveloperDetailDto deleteDeveloper(String memberId) {
+        // EMPLOYED 생태인 개발자를 RETIRED로 바꿔주고
+        Developer developer = developerRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new DMakerException(NO_DEVELOPER));
+        developer.setStatusCode(StatusCode.RETIRED);
+
+        // save into RetiredDeveloper
+        RetiredDeveloper retiredDeveloper = RetiredDeveloper.builder()
+                .memberId(memberId)
+                .name(developer.getName())
+                .build();
+
+        retiredDeveloperRepository.save(retiredDeveloper);
+        return DeveloperDetailDto.fromEntity(developer);
+    }
 }
