@@ -1,5 +1,6 @@
 package ac.kr.jejunu.developermaker.entity;
 
+import ac.kr.jejunu.developermaker.code.StatusCode;
 import ac.kr.jejunu.developermaker.type.DeveloperLevel;
 import ac.kr.jejunu.developermaker.type.DeveloperSkillType;
 import lombok.*;
@@ -44,6 +45,9 @@ public class Developer {
     private String memberId;
     private String name;
     private Integer age;
+
+    @Enumerated(EnumType.STRING)
+    private StatusCode statusCode;
 
     @CreatedDate
     private LocalDateTime createdAt;
