@@ -86,6 +86,7 @@ public class DMakerService {
                 .orElseThrow(() -> new DMakerException(NO_DEVELOPER));
     }
 
+    @Transactional
     public DeveloperDetailDto editDeveloper(String memberId, EditDeveloper.Request request) {
         validateEditDeveloperRequest(request, memberId);
 
@@ -96,7 +97,7 @@ public class DMakerService {
         developer.setDeveloperSkillType(request.getDeveloperSkillType());
         developer.setExperienceYears(request.getExperienceYears());
 
-
+        return DeveloperDetailDto.fromEntity(developer);
     }
 
     private void validateEditDeveloperRequest(EditDeveloper.Request request, String memberId) {
@@ -104,4 +105,5 @@ public class DMakerService {
 
 
     }
+
 }
