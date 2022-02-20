@@ -35,7 +35,7 @@ public class DMakerController {
         //GET /developers HTTP/1.1
         log.info("GET /developers HTTP/1.1");
 
-        return dMakerService.getAllDevelopers();
+        return dMakerService.getAllEmployedDevelopers();
     }
 
     @GetMapping("/developer/{memberId}")
@@ -61,5 +61,11 @@ public class DMakerController {
 
         return dMakerService.editDeveloper(memberId, request);
     }
+
+    @DeleteMapping("/developer/{memberId}")
+    public DeveloperDetailDto deleteDeveloper(@PathVariable String memberId) {
+        return dMakerService.deleteDeveloper(memberId);
+    }
+
 
 }
