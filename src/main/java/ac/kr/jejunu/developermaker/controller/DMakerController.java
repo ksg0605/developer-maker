@@ -59,7 +59,7 @@ public class DMakerController {
         //GET /developers HTTP/1.1
         log.info("GET /developers HTTP/1.1");
 
-        return dMakerService.editDeveloper(memberId);
+        return dMakerService.editDeveloper(memberId, request);
     }
 
 }
