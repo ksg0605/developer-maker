@@ -65,6 +65,8 @@ public class DMakerService {
                     throw new DMakerException(DUPLICATED_MEMBER_ID);
                 }));
 
+        throw new ArrayIndexOutOfBoundsException();
+
     }
 
     private void validateDeveloperLevel(DeveloperLevel developerLevel, Integer experienceYears) {
